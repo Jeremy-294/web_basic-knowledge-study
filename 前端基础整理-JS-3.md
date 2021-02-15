@@ -327,19 +327,283 @@ showcallee();
 
 ### 28.EventLoop事件循环
 
-[https://blog.csdn.net/hz___zh/article/details/110958662?ops_request_misc=&request_id=&biz_id=102&utm_term=EventLoop%25E4%25BA%258B%25E4%25BB%25B6%25E5%25BE%25AA%25E7%258E%25AF&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduweb~default-1-110958662.pc_search_result_no_baidu_js](https://blog.csdn.net/hz___zh/article/details/110958662?ops_request_misc=&request_id=&biz_id=102&utm_term=EventLoop%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduweb~default-1-110958662.pc_search_result_no_baidu_js)
+- 首先清楚javaScript这门语言是一门单线程非阻塞的脚本语言
+
+>**单线程**是指在执行javascript代码的时候，只有一个主线程按照一定的顺序执行任务。
+>**非阻塞**是指当代码需要进行一项异步任务的时候，主线程会挂起这个任务，然后在异步结果返回时根据一定规则执行相应的回调。
+>
+>由于JS是应用在浏览器操作和DOM操作上的脚本语言，所以只能是单线程，否则会有冲突
+>
+>eg：`如果多线程同时操作同一个dom元素的话，比如子线程修改dom元素，子线程B删除这个Dom元素，如果子线程B先执行完毕，那么子线程A修改dom元素就不成立，是个悖论。`
+
+- 事件循环详细描述：
+
+>javascript擎遇到一个异步事件后并不会一直等待其返回结果，而是会将这个事件挂起，继续执行执行栈中的其他任务。当一个异步事件返回结果后，js会将这个事件加入与当前执行栈不同的另一个队列，我们称之为事件队列。被放入事件队列不会立刻执行其回调，而是等待当前执行栈中的所有任务都执行完毕， 主线程处于闲置状态时，主线程会去查找事件队列是否有任务。如果有，那么主线程会从中取出排在第一位的事件，并把这个事件对应的回调放入执行栈中，然后执行其中的同步代码…，如此反复，这样就形成了一个无限的循环。这就是这个过程被称为“事件循环（Event Loop）
+
+[https://blog.csdn.net/weixin_45111619/article/details/112019418?ops_request_misc=%25257B%252522request%25255Fid%252522%25253A%252522161336675916780261972472%252522%25252C%252522scm%252522%25253A%25252220140713.130102334..%252522%25257D&request_id=161336675916780261972472&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-1-112019418.pc_search_result_no_baidu_js&utm_term=%25E4%25BA%258B%25E4%25BB%25B6%25E5%25BE%25AA%25E7%258E%25AF%25E6%259C%25BA%25E5%2588%25B6eventloop](https://blog.csdn.net/weixin_45111619/article/details/112019418?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522161336675916780261972472%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=161336675916780261972472&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-1-112019418.pc_search_result_no_baidu_js&utm_term=%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF%E6%9C%BA%E5%88%B6eventloop)
 
 ### 29.宏任务与微任务	
 
+- 异步任务有两种类型：微任务（micorotask）和宏任务（macrotack），不同的类型的任务会放在不同的任务队列中（宏任务队列和微任务队列）
 
+[https://blog.csdn.net/weixin_45111619/article/details/112019418?ops_request_misc=%25257B%252522request%25255Fid%252522%25253A%252522161336675916780261972472%252522%25252C%252522scm%252522%25253A%25252220140713.130102334..%252522%25257D&request_id=161336675916780261972472&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-1-112019418.pc_search_result_no_baidu_js&utm_term=%25E4%25BA%258B%25E4%25BB%25B6%25E5%25BE%25AA%25E7%258E%25AF%25E6%259C%25BA%25E5%2588%25B6eventloop](https://blog.csdn.net/weixin_45111619/article/details/112019418?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522161336675916780261972472%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=161336675916780261972472&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-1-112019418.pc_search_result_no_baidu_js&utm_term=%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF%E6%9C%BA%E5%88%B6eventloop)
 
 ### 30.BOM属性对象方法
 
+- BOM浏览器对象模型：
+
+  ```js
+  window 对象 （浏览器对象，全局对象）
+  location 对象 （window.location 和document.location指向的是同一个对象）
+  navigator 对象
+  screen 对象
+  history 对象
+  ```
+
+  - window 对象
+
+  ```js
+  1、窗口位置：
+  　　　　screenTop，screenLeft（screenX,screenY）：窗口相对于屏幕左边和上边的位置
+  　　　　moveTo(x,y):将窗口移动到特定位置
+  　　　　moveby(xpx,ypx):移动的像素数
+  2、获取窗口大小
+  　　　　页面视图区大小：innerHeight,innerWidth
+  　　　　浏览器窗口大小：outerHeight，outerWidth　　
+  3、调整窗口
+  　　　　resizeTo(新宽度，新高度)；//window.resizeTo(100,100);//将浏览器窗口调整为100x100，outerWidth和outerHeight访问的值
+  　　　　resizeBy(宽差，高差)；//window.resizeBy(100,50),//又将窗口调整为200x150，在原窗口宽度的基础上增加了长度
+  4.打开新窗口
+  　　　　window.open();
+  　　　　点击打开一个宽高各100的新窗口
+         window.close();关闭窗口
+  　　　　window.opener = null;切断与原窗口的链接
+  5、超时调用
+  　　　　setTimeout(functionName,1000);
+  　　　　取消超时调用：clearTimeout();
+  6、间歇调用
+  　　　　setInterval();
+  　　　　clearIntval();
+  7、系统对话框：alert();confirm();prompt();
+  ```
+
+  - location 对象
+
+  ```js
+  location.href = "";：在原页面上重新加载一个网页
+  window.open();：打开一个新窗口
+  ```
+
+  - history 对象
+
+  ```js
+  　href="Javascript:history.back();"
+  1、go()
+  history.go(-1)//后退一页
+  history.go(1)//前进一页
+  history.go(2)//前进两页
+  2、
+  history.back();//后退一页
+  history.forward();//前进一页
+  3、length属性
+  if(history.length == 0)//判断是否是新打开的页面
+  ```
+
+  [BOM主要对象属性方法总结](https://www.cnblogs.com/Grace-zyy/p/8361805.html)
+
 ### 31.函数柯里化及其通用封装
+
+- 增加函数通用性
+
+> 柯里化（Currying）是把接受多个参数的函数变换成接受一个单一参数(最初函数的第一个参数)的函数，并且返回接受余下的参数且返回结果的新函数的技术。
+
+```js
+//判断参数类型的柯里化
+function typeIs(type,arg){
+    return  Object.prototype.toString.call(arg) === `[object ${type}]`
+}
+typeIs('Number',123) //output: true
+typeIs('String',123) //output: false
+typeIs('Object',{})  //output: true
+
+//currying
+function typeIs(type){
+    return function(arg){
+        return Object.prototype.toString.call(arg) === `[object ${type}]`
+    }
+}
+let isNumber = typeIs('Number')
+isNumber(1234)		// true
+isNumber('1234')	// false
+
+let isArray = typeIs('Array')
+isArray([])	       // true
+isArray({})		   //false
+```
+
+- 柯里化的通用封装
+
+```js
+//currying的通用封装
+function currying(fn){  //fn是一个函数在上述例子中可以理解为判断类型的函数，该函数接受多个参数
+    //***一个函数的长度就是它参数的个数***
+    let fnLen = fn.length;
+
+    //返回一个收集参数函数
+    return function collectArgs(){
+        //将收集的参数保存在args中
+        let args = [...arguments];
+        //参数收集完毕，将所有的参数传入fn中执行并返回执行结果
+        if(args.length >= fnLen){
+            return fn(...args);
+        }
+        //参数还没有收集完毕，返回一个函数，并于其中递归调用收集参数函数
+        return function(){
+            return collectArgs(...args,...arguments);
+        }
+    }
+}
+
+//直接拿函数typeIs(type,arg){}来实验：
+function typeIs(type,arg){
+	return  Object.prototype.toString.call(arg) === `[object ${type}]`
+}
+
+const whatType = currying(typeIs) //调用currying
+
+const isString = whatType('String')
+const isArray = whatType('Array')
+console.log(isArray([]))       // true
+console.log(isString(23))      // false
+```
 
 ### 32.JS的map()和reduce()方法
 
+- map() 参数为一个回调函数，输出结果为一个执行回调之后的新的数组
+
+```js
+//map()  计算数组中各元素的平方
+function pow(x) {
+    return x * x;
+}
+var arr = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+var results = arr.map(pow); 
+return result; // [1, 4, 9, 16, 25, 36, 49, 64, 81];  //返回一个新数组
+
+//把Array的所有数字转为字符串,只需要一行代码。
+var arr = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+arr.map(String); // ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+```
+
+- reduce()方法：Array的reduce()把一个函数作用在这个Array的[x1, x2, x3…]上，这个`回调函数`必须接收两个参数，reduce()把结果继续和序列的下一个元素做累积计算，其效果就是：
+
+```js
+[x1, x2, x3, x4].reduce(f) = f(f(f(x1, x2), x3), x4);
+```
+
+- reduce()实现累加器：
+
+```js
+1.使用reduce()对一个数组求和：
+var arr = [1, 3, 5, 7, 9];
+arr.reduce(function (x, y) {
+    return x + y;
+}); // 25
+
+2.数组就乘积
+var  arr = [1, 2, 3, 4];
+var mul = arr.reduce((x,y)=>x*y)
+console.log( mul ); //求乘积，24
+```
+
+- reduce()高级用法：对象里元素求和
+
+```js
+var result = [
+    {
+        subject: 'math',
+        score: 10
+    },
+    {
+        subject: 'chinese',
+        score: 20
+    },
+    {
+        subject: 'english',
+        score: 30
+    }
+];
+
+var sum = result.reduce(function(prev, cur) {
+    return cur.score + prev;
+}, 0);
+console.log(sum) //60
+```
+
+[完整reduce()高级用法](https://blog.csdn.net/qq_24147051/article/details/102834109?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522161336980316780269869435%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&request_id=161336980316780269869435&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~first_rank_v2~rank_v29-3-102834109.pc_search_result_no_baidu_js&utm_term=jsreduce%28%29%E6%96%B9%E6%B3%95)
+
 ### 33.“==”和“===”的区别
+
+**1、对于string,number等基础类型，==和===是有区别的**
+
+1）不同类型间比较，==之比较“转化成同一类型后的值”看“值”是否相等，===如果类型不同，其结果就是不等，
+
+==可以进行类型转换
+
+2）同类型比较，直接进行“值”比较，两者结果一样
+
+**2、对于Array,Object等高级类型，==和===是没有区别的**
+
+进行“指针地址”比较
+
+**3、基础类型与高级类型，==和===是有区别的**
+
+1）对于==，将高级转化为基础类型，进行“值”比较
+
+2）因为类型不同，===结果为false
 
 ### 34.setTimeout用作倒计时为何会产生误差？
 
+定时器是属于 **宏任务(macrotask)** 。如果当前 **执行栈** 所花费的时间大于 **定时器** 时间，那么定时器的回调在 **宏任务(macrotask)** 里，来不及去调用，所有这个时间会有误差。
+
+- 情况一
+
+```js
+setTimeout(function () {
+	console.log('biubiu');
+}, 1000);
+
+某个执行时间很长的函数();
+```
+
+如果定时器下面的函数执行要 5秒钟，那么定时器里的log 则需要 5秒之后再执行，函数占用了当前 **执行栈** ，要等执行栈执行完毕后再去读取 **微任务(microtask)**，等 **微任务(microtask)** 完成，这个时候才会去读取 **宏任务(macrotask)** 里面的 **setTimeout** 回调函数执行。**setInterval** 同理，例如每3秒放入宏任务，也要等到执行栈的完成。
+
+```js
+浏览器端执行顺序：
+1.执行同步代码，这是宏任务
+2.执行栈为空，查询是否有微任务要执行
+3.必要时渲染UI
+4.进行下一轮的 EventLoop ，执行宏任务中的异步代码
+```
+
+- 情况二
+
+```js
+setTimeout(function() {
+    setTimeout(function() {
+        setTimeout(function() {
+            setTimeout(function() {
+                setTimeout(function() {
+                    setTimeout(function() {
+                        console.log('嘤嘤嘤');
+                    }, 0);
+                }, 0);
+            }, 0);
+        }, 0);
+    }, 0);
+}, 0);
+
+//如果timeout嵌套大于 5层，而时间间隔小于4ms，则时间间隔增加到4ms。
+```
+
+[详细内容](https://juejin.cn/post/6844903861925199886?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com%3Futm_medium%3Dhao.caibaojian.com&utm_source=hao.caibaojian.com)
