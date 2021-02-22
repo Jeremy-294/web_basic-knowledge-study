@@ -407,7 +407,7 @@ getElementsByTagName() 和 getElementsByClassName()
   > \- 安全性相对较高
   > \- 无缓存
 
-- Ajax请求过程:**创建XMLHttpRequest、连接服务器、发送请求、服务器做出响应、接收响应数据**
+- Ajax请求过程:**创建XMLHttpRequest对象、连接服务器、发送请求、服务器做出响应、接收响应数据**
 
 ```javascript
 1.创建一个Ajax对象
